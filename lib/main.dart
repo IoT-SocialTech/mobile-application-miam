@@ -2,11 +2,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:miam_flutter/account/application/bloc_or_cubit/login_cubit.dart';
-import 'package:miam_flutter/account/domain/repositories/auth_repository.dart';
 import 'package:miam_flutter/account/infrastructure/repositories_implementations/auth_repository_impl.dart';
 import 'package:miam_flutter/account/presentation/screens/login_screen.dart';
-
-import 'Account/application/use_cases/login_use_case.dart';
+import 'package:miam_flutter/account/application/use_cases/login_use_case.dart';
 
 
 void main() {

@@ -1,6 +1,6 @@
 // lib/account/application/bloc_or_cubit/login_cubit.dart
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:miam_flutter/Account/application/use_cases/login_use_case.dart';
+import 'package:miam_flutter/account/application/use_cases/login_use_case.dart';
 
 class LoginCubit extends Cubit<LoginState> {
   final LoginUseCase loginUseCase;

@@ -21,20 +21,21 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MultiBlocProvider(
       providers: [
-        /*BlocProvider<LoginCubit>(
+        BlocProvider<LoginCubit>(
           create: (context) => LoginCubit(
             LoginUseCase(AuthRepositoryImpl()),
           ),
-        ),*/
+        ),/*
         BlocProvider<VitalSignCubit>(
           create: (context) => VitalSignCubit(
             GetVitalSignsUseCase(VitalSignRepositoryImpl()),
           )..startMonitoring(), // Iniciar el monitoreo de signos vitales
-        ),
+        ),*/
       ],
       child: MaterialApp(
         title: 'Flutter DDD Login',
-        home: MonitoringScreen(),
+        //home: MonitoringScreen(),
+        home: LoginScreen(),
         debugShowCheckedModeBanner: false,
       ),
     );

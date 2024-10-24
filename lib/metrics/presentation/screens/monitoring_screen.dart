@@ -1,17 +1,16 @@
-// lib/metrics/presentation/screens/monitoring_screen.dart
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:miam_flutter/metrics/application/bloc_or_cubit/vital_sign_cubit.dart';
-import 'package:miam_flutter/metrics/domain/entities/vital_sign.dart';
-
 
 class MonitoringScreen extends StatelessWidget {
+
+  int _selectedIndex = 0;
+
+  // Función que gestiona el cambio de pestaña en el BottomNavigationBar
+  void _onItemTapped(int index) {
+    _selectedIndex = index;
+  }
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text("Dashboard"),
-      ),
       body: SingleChildScrollView(
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -134,6 +133,37 @@ class MonitoringScreen extends StatelessWidget {
           ],
         ),
       ),
+      // Bottom Navigation Bar
+      bottomNavigationBar: BottomNavigationBar(
+        items: [
+          BottomNavigationBarItem(
+            icon: Icon(Icons.dashboard),
+            label: 'Dashboard',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.shield),
+            label: 'Security',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.notifications),
+            label: 'Notifications',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.menu), // Menu Hamburguesa
+            label: 'Menu',
+          ),
+        ],
+        currentIndex: _selectedIndex,
+        selectedItemColor: Colors.blue,
+        unselectedItemColor: Colors.grey,
+        onTap: (index) {
+          if (index == 3) {
+            Scaffold.of(context).openDrawer(); // Abre el Drawer si selecciona el ícono de menú
+          } else {
+            _onItemTapped(index); // Cambia la página si selecciona otro ícono
+          }
+        },
+      ),
     );
   }
 
@@ -209,4 +239,3 @@ class MonitoringScreen extends StatelessWidget {
     );
   }
 }
-

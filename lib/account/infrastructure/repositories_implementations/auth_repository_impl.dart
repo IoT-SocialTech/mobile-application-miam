@@ -7,8 +7,8 @@ class AuthRepositoryImpl implements AuthRepository {
     // Aquí es donde iría tu lógica de autenticación, como una llamada a un servidor de autenticación o Firebase.
     // Puedes simular un inicio de sesión por ahora:
     await Future.delayed(Duration(seconds: 2)); // Simular tiempo de espera
-    if (email != "test@example.com" || password != "password") {
-      throw Exception("Invalid email or password");
-    }
+    //if (email != "test@example.com" || password != "password") {
+    // throw Exception("Invalid email or password");
+    //}
   }
 }

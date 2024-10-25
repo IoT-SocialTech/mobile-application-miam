@@ -1,7 +1,7 @@
-// lib/account/presentation/screens/login_screen.dart
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:miam_flutter/account/application/bloc_or_cubit/login_cubit.dart';
+import 'package:miam_flutter/metrics/presentation/screens/monitoring_screen.dart'; // Importar MonitoringScreen
 
 class LoginScreen extends StatefulWidget {
   @override
@@ -116,8 +116,14 @@ class _LoginScreenState extends State<LoginScreen> {
                   ScaffoldMessenger.of(context).showSnackBar(
                     SnackBar(content: Text('Login Successful')),
                   );
-                  // Navegar a la siguiente pantalla
-                  // Navigator.push(context, ...);
+
+                  // Navegar a la pantalla MonitoringScreen
+                  Navigator.pushReplacement(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => MonitoringScreen(),
+                    ),
+                  );
                 }
               },
               builder: (context, state) {

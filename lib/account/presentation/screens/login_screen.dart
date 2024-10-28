@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:miam_flutter/account/application/bloc_or_cubit/login_cubit.dart';
-import 'package:miam_flutter/metrics/presentation/screens/monitoring_screen.dart'; // Importar MonitoringScreen
+import 'package:miam_flutter/MainScreen.dart'; // Importar MonitoringScreen
 
 class LoginScreen extends StatefulWidget {
   @override
@@ -121,7 +121,7 @@ class _LoginScreenState extends State<LoginScreen> {
                   Navigator.pushReplacement(
                     context,
                     MaterialPageRoute(
-                      builder: (context) => MonitoringScreen(),
+                      builder: (context) => MainScreen(),
                     ),
                   );
                 }

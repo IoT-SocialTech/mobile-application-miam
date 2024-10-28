@@ -11,7 +11,7 @@ import 'package:miam_flutter/metrics/application/bloc_or_cubit/vital_sign_cubit.
 import 'package:miam_flutter/metrics/infrastructure/repositories_implementations/vital_sign_repository_impl.dart';
 import 'package:miam_flutter/metrics/application/use_cases/get_vital_signs_use_case.dart';
 
-import 'package:miam_flutter/Notification/presentation/screens/alert_history_screen.dart';
+import 'package:miam_flutter/MainScreen.dart';
 
 void main() {
   runApp(MyApp());
@@ -36,8 +36,9 @@ class MyApp extends StatelessWidget {
       child: MaterialApp(
         title: 'Flutter DDD Login',
         //home: MonitoringScreen(),
-        //home: LoginScreen(),
-        home: AlertHistoryScreen(),
+        home: LoginScreen(),
+        //home: AlertHistoryScreen(),
+        //home: MainScreen(),
         debugShowCheckedModeBanner: false,
       ),
     );

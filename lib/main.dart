@@ -36,9 +36,9 @@ class MyApp extends StatelessWidget {
       child: MaterialApp(
         title: 'Flutter DDD Login',
         //home: MonitoringScreen(),
-        home: LoginScreen(),
+        //home: LoginScreen(),
         //home: AlertHistoryScreen(),
-        //home: MainScreen(),
+        home: MainScreen(),
         debugShowCheckedModeBanner: false,
       ),
     );

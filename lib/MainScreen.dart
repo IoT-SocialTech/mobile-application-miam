@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:miam_flutter/Device/presentation/screens/band_list_screen.dart';
 import 'package:miam_flutter/Notification/presentation/screens/alert_history_screen.dart';
 import 'package:miam_flutter/metrics/presentation/screens/monitoring_screen.dart';
+import 'package:miam_flutter/Device/presentation/screens/band_configuration_screen.dart';
 
 class MainScreen extends StatefulWidget {
   @override
@@ -13,7 +15,7 @@ class _MainScreenState extends State<MainScreen> {
   final List<Widget> _screens = [
     MonitoringScreen(),
     AlertHistoryScreen(),
-    AlertHistoryScreen(),
+    BandListScreen(),
   ];
 
   void _onItemTapped(int index) {

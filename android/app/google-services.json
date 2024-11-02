@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "523186833594",
+    "project_id": "miam-flutter",
+    "storage_bucket": "miam-flutter.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:523186833594:android:601419d6fe525faa8a1a83",
+        "android_client_info": {
+          "package_name": "com.socialtech.miam_flutter"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBCb-gpm6qBUHY93a9_4GZmGQKngI7YIu4"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

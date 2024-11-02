@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:miam_flutter/Notification/presentation/screens/alert_history_screen.dart';
 import 'package:miam_flutter/metrics/presentation/screens/monitoring_screen.dart';
+import 'package:miam_flutter/account/presentation/screens/patient_list_screen.dart';
 
 class MainScreen extends StatefulWidget {
+  const MainScreen({super.key});
   @override
   _MainScreenState createState() => _MainScreenState();
 }
@@ -14,6 +16,7 @@ class _MainScreenState extends State<MainScreen> {
     MonitoringScreen(),
     AlertHistoryScreen(),
     AlertHistoryScreen(),
+    PatientListScreen(),
   ];
 
   void _onItemTapped(int index) {
@@ -45,8 +48,8 @@ class _MainScreenState extends State<MainScreen> {
             label: 'Notifications',
           ),
           BottomNavigationBarItem(
-            icon: Icon(Icons.menu), // Menu Hamburguesa
-            label: 'Menu',
+            icon: Icon(Icons.person), // Ícono para lista de pacientes
+            label: 'Patients',
           ),
         ],
         currentIndex: _selectedIndex,

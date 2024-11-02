@@ -1,4 +1,4 @@
-package com.example.miam_flutter
+package com.socialtech.miam_flutter
 
 import io.flutter.embedding.android.FlutterActivity
 

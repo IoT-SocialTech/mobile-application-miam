@@ -12,12 +12,18 @@ import 'package:miam_flutter/metrics/infrastructure/repositories_implementations
 import 'package:miam_flutter/metrics/application/use_cases/get_vital_signs_use_case.dart';
 
 import 'package:miam_flutter/MainScreen.dart';
+import 'package:miam_flutter/account/presentation/screens/patient_list_screen.dart';
+import 'package:miam_flutter/account/presentation/screens/patient_form_screen.dart';
+import 'package:miam_flutter/metrics/presentation/screens/patient_details_screen.dart';
+
 
 void main() {
   runApp(MyApp());
 }
 
 class MyApp extends StatelessWidget {
+  const MyApp({super.key});
+
   @override
   Widget build(BuildContext context) {
     return MultiBlocProvider(
@@ -35,11 +41,18 @@ class MyApp extends StatelessWidget {
       ],
       child: MaterialApp(
         title: 'Flutter DDD Login',
-        //home: MonitoringScreen(),
-        home: LoginScreen(),
-        //home: AlertHistoryScreen(),
-        //home: MainScreen(),
         debugShowCheckedModeBanner: false,
+        initialRoute: '/login',
+        routes: {
+          '/login': (context) => LoginScreen(),
+          '/main': (context) => MainScreen(),
+          '/patients': (context) => PatientListScreen(),
+          '/add_patient': (context) => PatientFormScreen(),
+          '/patient_details': (context) {
+            final patientData = ModalRoute.of(context)!.settings.arguments as Map<String, dynamic>;
+            return PatientDetailsScreen(patientData: patientData);
+          },
+        },
       ),
     );
   }

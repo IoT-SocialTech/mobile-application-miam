@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:miam_flutter/account/application/bloc_or_cubit/login_cubit.dart';
-import 'package:miam_flutter/MainScreen.dart'; // Importar MonitoringScreen
+import 'package:miam_flutter/MainScreen.dart';
+import 'package:miam_flutter/account/presentation/screens/register_caregiver_screen.dart'; // Importar MonitoringScreen
 
 class LoginScreen extends StatefulWidget {
   @override
@@ -78,15 +79,21 @@ class _LoginScreenState extends State<LoginScreen> {
                 ),
               ),
             ),
-            Align(
-              alignment: Alignment.centerRight,
-              child: TextButton(
-                onPressed: () {
-                  // Implementar la lógica para "Forgot password"
-                },
-                child: Text('Forgot password?'),
-              ),
+          Align(
+            alignment: Alignment.centerRight,
+            child: TextButton(
+              onPressed: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => RegisterCaregiverScreen(),
+                  ),
+                );
+              },
+              child: Text('Register'),
             ),
+          ),
+
             Row(
               children: [
                 Checkbox(

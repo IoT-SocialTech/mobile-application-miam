@@ -146,7 +146,8 @@ class LoginCubit extends Cubit<LoginState> {
 
       print("paciente account: ${account.id??0}");
       print("email: ${name}paciente$id$age@gmail.com");
-
+      print("relativeId: $relativeId");
+      print("caregiverId: ${caregiver.id}");
       await createAccountUseCase.createPatient(
         name: name,
         lastName: lastName,

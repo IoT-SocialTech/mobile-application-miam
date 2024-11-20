@@ -114,7 +114,7 @@ class AuthRepositoryImpl implements AuthRepository {
     if (token == null) {
       throw Exception("No token found. Please log in again.");
     }
-
+    print("creando paciente...");
     final response = await http.post(
       url,
       headers: {
@@ -132,6 +132,8 @@ class AuthRepositoryImpl implements AuthRepository {
         "caregiverIds": caregiverIds,
       }),
     );
+
+    print("response create patient: ${response.body??'no response'}");
 
     if (response.statusCode != 201) {
       final error = jsonDecode(response.body)['message'] ?? 'Failed to create patient.';

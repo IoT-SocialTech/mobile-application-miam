@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:miam_flutter/account/application/bloc_or_cubit/login_cubit.dart';
 import 'package:miam_flutter/Device/domain/repositories/patient_caregiver_repository.dart';
 import 'package:miam_flutter/Device/domain/entities/responsePatient.dart';
+import 'package:miam_flutter/account/domain/repositories/caregiver_repository.dart';
 
 class BandListScreen extends StatefulWidget {
   @override
@@ -11,7 +12,7 @@ class BandListScreen extends StatefulWidget {
 
 class _BandListScreenState extends State<BandListScreen> {
   List<ResponsePatient> patients = [];
-  final int caregiverId = 13; // ID del caregiver hardcodeado
+
 
   @override
   void initState() {
@@ -22,8 +23,11 @@ class _BandListScreenState extends State<BandListScreen> {
   Future<void> _fetchPatients() async {
     try {
       final patientCaregiverRepository = PatientCaregiverRepository();
-      final fetchedPatients =
-      await patientCaregiverRepository.getPatientsByCaregiverId(caregiverId);
+      final caregiverRepository = CaregiverRepository();
+      int id = await getUserId()?? 0;
+      final caregiver = await caregiverRepository.getCaregiverByAccountId(id);
+      final fetchedPatients = await patientCaregiverRepository.getPatientsByCaregiverId(caregiver.id);
+
       setState(() {
         patients = fetchedPatients;
       });
@@ -142,25 +146,23 @@ class _BandListScreenState extends State<BandListScreen> {
             ),
             ElevatedButton(
               onPressed: () async {
-                final currentContext = context;
+                final currentContext = context; // Guarda el contexto actual
 
                 try {
+
                   await currentContext.read<LoginCubit>().createPatient(
                     name: nameController.text,
                     lastName: lastNameController.text,
                     age: int.parse(ageController.text),
                     address: addressController.text,
                     birthdate: birthdateController.text,
-                    //accountId: caregiverId, // Account ID del caregiver logeado
                     relativeId: int.parse(relativeIdController.text),
-                    //caregiverIds: [caregiverId],
                   );
 
                   ScaffoldMessenger.of(context).showSnackBar(
                     SnackBar(content: Text("Patient Created Successfully!")),
                   );
                   Navigator.of(context).pop();
-                  _fetchPatients(); // Actualiza la lista de pacientes
                 } catch (e) {
                   ScaffoldMessenger.of(context).showSnackBar(
                     SnackBar(content: Text("Error: ${e.toString()}")),

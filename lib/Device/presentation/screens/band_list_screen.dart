@@ -1,15 +1,38 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:miam_flutter/account/application/bloc_or_cubit/login_cubit.dart';
+import 'package:miam_flutter/Device/domain/repositories/patient_caregiver_repository.dart';
+import 'package:miam_flutter/Device/domain/entities/responsePatient.dart';
 
-class BandListScreen extends StatelessWidget {
-  final List<Map<String, dynamic>> bands = [
-    {'id': 1, 'patientName': 'Carlos'},
-    {'id': 2, 'patientName': 'María'},
-    {'id': 3, 'patientName': 'Juan'},
-    {'id': 4, 'patientName': 'Ana'},
-    {'id': 5, 'patientName': 'Luis'},
-  ];
+class BandListScreen extends StatefulWidget {
+  @override
+  _BandListScreenState createState() => _BandListScreenState();
+}
+
+class _BandListScreenState extends State<BandListScreen> {
+  List<ResponsePatient> patients = [];
+  final int caregiverId = 13; // ID del caregiver hardcodeado
+
+  @override
+  void initState() {
+    super.initState();
+    _fetchPatients();
+  }
+
+  Future<void> _fetchPatients() async {
+    try {
+      final patientCaregiverRepository = PatientCaregiverRepository();
+      final fetchedPatients =
+      await patientCaregiverRepository.getPatientsByCaregiverId(caregiverId);
+      setState(() {
+        patients = fetchedPatients;
+      });
+    } catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text("Error fetching patients: ${e.toString()}")),
+      );
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -27,43 +50,40 @@ class BandListScreen extends StatelessWidget {
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
-        child: ListView.builder(
-          itemCount: bands.length,
+        child: patients.isEmpty
+            ? Center(child: Text("No patients found."))
+            : ListView.builder(
+          itemCount: patients.length,
           itemBuilder: (context, index) {
-            final band = bands[index];
-            return _buildBandCard(context, band);
+            final patient = patients[index];
+            return _buildPatientCard(context, patient);
           },
         ),
       ),
     );
   }
 
-  Widget _buildBandCard(BuildContext context, Map<String, dynamic> band) {
-    return GestureDetector(
-      onTap: () {
-        // Navegar a la pantalla de configuración de bandas
-      },
-      child: Card(
-        margin: EdgeInsets.symmetric(vertical: 8.0),
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(20.0),
-        ),
-        color: Colors.blue[50],
-        child: Padding(
-          padding: const EdgeInsets.all(16.0),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Text(
-                "ID: ${band['id']}",
-                style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
-              ),
-              Text(
-                "Patient: ${band['patientName']}",
-                style: TextStyle(fontSize: 16),
-              ),
-            ],
-          ),
+  Widget _buildPatientCard(BuildContext context, ResponsePatient patient) {
+    return Card(
+      margin: EdgeInsets.symmetric(vertical: 8.0),
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(20.0),
+      ),
+      color: Colors.blue[50],
+      child: Padding(
+        padding: const EdgeInsets.all(16.0),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            Text(
+              "ID: ${patient.id}",
+              style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+            ),
+            Text(
+              "Patient: ${patient.name} ${patient.lastName}",
+              style: TextStyle(fontSize: 16),
+            ),
+          ],
         ),
       ),
     );
@@ -122,23 +142,25 @@ class BandListScreen extends StatelessWidget {
             ),
             ElevatedButton(
               onPressed: () async {
-                final currentContext = context; // Guarda el contexto actual
+                final currentContext = context;
 
                 try {
-
                   await currentContext.read<LoginCubit>().createPatient(
                     name: nameController.text,
                     lastName: lastNameController.text,
                     age: int.parse(ageController.text),
                     address: addressController.text,
                     birthdate: birthdateController.text,
+                    //accountId: caregiverId, // Account ID del caregiver logeado
                     relativeId: int.parse(relativeIdController.text),
+                    //caregiverIds: [caregiverId],
                   );
 
                   ScaffoldMessenger.of(context).showSnackBar(
                     SnackBar(content: Text("Patient Created Successfully!")),
                   );
                   Navigator.of(context).pop();
+                  _fetchPatients(); // Actualiza la lista de pacientes
                 } catch (e) {
                   ScaffoldMessenger.of(context).showSnackBar(
                     SnackBar(content: Text("Error: ${e.toString()}")),

@@ -115,7 +115,7 @@ class _MonitoringScreenState extends State<MonitoringScreen> {
             Padding(
               padding: const EdgeInsets.all(16.0),
               child: Text(
-                "Caregiver: $selectedCaregiverName !",
+                "Caregiver: $selectedCaregiverName",
                 style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
               ),
             ),

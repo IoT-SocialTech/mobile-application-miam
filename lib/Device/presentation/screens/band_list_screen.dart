@@ -4,6 +4,8 @@ import 'package:miam_flutter/account/application/bloc_or_cubit/login_cubit.dart'
 import 'package:miam_flutter/Device/domain/repositories/patient_caregiver_repository.dart';
 import 'package:miam_flutter/Device/domain/entities/responsePatient.dart';
 import 'package:miam_flutter/account/domain/repositories/caregiver_repository.dart';
+import 'band_configuration_screen.dart';
+
 
 class BandListScreen extends StatefulWidget {
   @override
@@ -68,26 +70,36 @@ class _BandListScreenState extends State<BandListScreen> {
   }
 
   Widget _buildPatientCard(BuildContext context, ResponsePatient patient) {
-    return Card(
-      margin: EdgeInsets.symmetric(vertical: 8.0),
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(20.0),
-      ),
-      color: Colors.blue[50],
-      child: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            Text(
-              "ID: ${patient.id}",
-              style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
-            ),
-            Text(
-              "Patient: ${patient.name} ${patient.lastName}",
-              style: TextStyle(fontSize: 16),
-            ),
-          ],
+    return GestureDetector(
+      onTap: () {
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) => BandConfigurationScreen(patientId: patient.id),
+          ),
+        );
+      },
+      child: Card(
+        margin: EdgeInsets.symmetric(vertical: 8.0),
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(20.0),
+        ),
+        color: Colors.blue[50],
+        child: Padding(
+          padding: const EdgeInsets.all(16.0),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Text(
+                "ID: ${patient.id}",
+                style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+              ),
+              Text(
+                "Patient: ${patient.name} ${patient.lastName}",
+                style: TextStyle(fontSize: 16),
+              ),
+            ],
+          ),
         ),
       ),
     );

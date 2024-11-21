@@ -1,39 +1,150 @@
 import 'package:flutter/material.dart';
+import 'package:miam_flutter/Device/domain/repositories/patient_caregiver_repository.dart';
+import 'package:miam_flutter/Device/domain/entities/responsePatient.dart';
+import 'package:miam_flutter/Notification/domain/repositories/medication_patient_repository.dart';
+import 'package:miam_flutter/account/domain/repositories/caregiver_repository.dart';
+import 'package:miam_flutter/account/application/bloc_or_cubit/login_cubit.dart';
 
-class BandConfigurationScreen extends StatelessWidget {
-  final int bandId;
-  final String patientName;
 
-  BandConfigurationScreen({required this.bandId, required this.patientName});
+class BandConfigurationScreen extends StatefulWidget {
+  final int patientId;
+
+  BandConfigurationScreen({required this.patientId});
+
+  @override
+  _BandConfigurationScreenState createState() => _BandConfigurationScreenState();
+}
+
+class _BandConfigurationScreenState extends State<BandConfigurationScreen> {
+  ResponsePatient? patient;
+  int? caregiverId; // Variable para almacenar el caregiverId
+  bool isLoading = true;
+
+  @override
+  void initState() {
+    super.initState();
+    _fetchData();
+  }
+
+  Future<void> _fetchData() async {
+    try {
+      final patientCaregiverRepository = PatientCaregiverRepository();
+      final caregiverRepository = CaregiverRepository();
+
+      // Obtener el accountId
+      int accountId = await getUserId() ?? 0;
+
+      // Obtener el caregiverId
+      final caregiver = await caregiverRepository.getCaregiverByAccountId(accountId);
+
+      // Obtener los detalles del paciente
+      final fetchedPatient = await patientCaregiverRepository.getPatientById(widget.patientId);
+
+      setState(() {
+        caregiverId = caregiver.id;
+        patient = fetchedPatient;
+        isLoading = false;
+      });
+    } catch (e) {
+      setState(() {
+        isLoading = false;
+      });
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text("Error fetching data: ${e.toString()}")),
+      );
+    }
+  }
+
+  Future<void> _addMedicationSchedule() async {
+    if (caregiverId == null) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text("Caregiver ID not found.")),
+      );
+      return;
+    }
+
+    final medicationRepository = MedicationPatientRepository();
+    final TextEditingController nameController = TextEditingController();
+    final TextEditingController doseController = TextEditingController();
+    final TextEditingController hourController = TextEditingController();
+
+    showDialog(
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          title: Text("Add Medication"),
+          content: SingleChildScrollView(
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                TextField(
+                  controller: nameController,
+                  decoration: InputDecoration(labelText: "Medication Name"),
+                ),
+                TextField(
+                  controller: doseController,
+                  decoration: InputDecoration(labelText: "Dose"),
+                  keyboardType: TextInputType.number,
+                ),
+                TextField(
+                  controller: hourController,
+                  decoration: InputDecoration(labelText: "Hour (HH:mm:ss)"),
+                ),
+              ],
+            ),
+          ),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.of(context).pop(),
+              child: Text("Cancel"),
+            ),
+            ElevatedButton(
+              onPressed: () async {
+                try {
+                  await medicationRepository.createMedicationSchedule(
+                    medicationName: nameController.text,
+                    dose: int.parse(doseController.text),
+                    hour: hourController.text,
+                    taken: false,
+                    patientId: widget.patientId,
+                    caregiverId: caregiverId!, // Usar el caregiverId dinámico
+                  );
+
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(content: Text("Medication Added Successfully!")),
+                  );
+                  Navigator.of(context).pop();
+                } catch (e) {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(content: Text("Error: ${e.toString()}")),
+                  );
+                }
+              },
+              child: Text("Add Medication"),
+            ),
+          ],
+        );
+      },
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text("Configure Band for $patientName"),
+        title: Text("Configure Band"),
       ),
-      body: Padding(
+      body: isLoading
+          ? Center(child: CircularProgressIndicator())
+          : patient == null
+          ? Center(child: Text("Patient not found."))
+          : Padding(
         padding: const EdgeInsets.all(16.0),
         child: ListView(
           children: [
             _buildPatientInfoSection(),
             SizedBox(height: 16),
-            Text(
-              "Caregiver",
-              style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-            ),
-            SizedBox(height: 8),
-            _buildCaregiverSection(),
-            SizedBox(height: 16),
-            Text(
-              "Relative",
-              style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-            ),
-            _buildRelativeSection(),
-            SizedBox(height: 16),
-            _buildResetButton(),
-            SizedBox(height: 20),
-            _buildSaveButton(),
+            _buildAddMedicationButton(),
           ],
         ),
       ),
@@ -50,152 +161,26 @@ class BandConfigurationScreen extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text(
-              "Patient",
+              "Patient Details",
               style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
             ),
             SizedBox(height: 8),
-            Text("Name: $patientName"),
+            Text("Name: ${patient?.name} ${patient?.lastName}"),
+            Text("Address: ${patient?.address}"),
+            Text("Birthdate: ${patient?.birthDate}"),
           ],
         ),
       ),
     );
   }
 
-  Widget _buildCaregiverSection() {
-    return Card(
-      elevation: 2,
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
-      child: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text("Assigned to: Carolina Suarez"),
-            SizedBox(height: 16),
-            Text("Alerts:", style: TextStyle(fontWeight: FontWeight.bold)),
-            Divider(),
-            _buildAlertCheckbox("Alert if temperature is below", "°C", "4"),
-            Divider(),
-            _buildAlertCheckbox("Alert if pulse is below", "bpm", "2"),
-            Divider(),
-            CheckboxListTile(
-              title: Text("Alert me if fall risk is high"),
-              value: false,
-              onChanged: (value) {},
-              controlAffinity: ListTileControlAffinity.leading,
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-
-  Widget _buildRelativeSection() {
-    return Card(
-      elevation: 2,
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
-      child: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Text("Related to: Carolina Suarez"),
-                TextButton.icon(
-                  onPressed: () {},
-                  icon: Icon(Icons.delete, color: Colors.red),
-                  label: Text(
-                    "Remove relative",
-                    style: TextStyle(color: Colors.red),
-                  ),
-                ),
-              ],
-            ),
-            SizedBox(height: 16),
-            Text("Alerts:", style: TextStyle(fontWeight: FontWeight.bold)),
-            Divider(),
-            _buildAlertCheckbox("Alert if temperature is below", "°C", "1"),
-            Divider(),
-            _buildAlertCheckbox("Alert if pulse is below", "bpm", "3"),
-            Divider(),
-            CheckboxListTile(
-              title: Text("Alert me if fall risk is high"),
-              value: false,
-              onChanged: (value) {},
-              controlAffinity: ListTileControlAffinity.leading,
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-
-  Widget _buildAlertCheckbox(String title, String unit, String defaultValue) {
-    return Row(
-      crossAxisAlignment: CrossAxisAlignment.center,
-      children: [
-        Checkbox(value: false, onChanged: (value) {}),
-        Expanded(
-          child: Text(title),
-        ),
-        SizedBox(width: 8),
-        _buildInputField(defaultValue),
-        SizedBox(width: 5),
-        Text(unit),
-        SizedBox(width: 10),
-        Text("or higher than"),
-        SizedBox(width: 10),
-        _buildInputField(defaultValue),
-        SizedBox(width: 5),
-        Text(unit),
-      ],
-    );
-  }
-
-  Widget _buildInputField(String defaultValue) {
-    return SizedBox(
-      width: 40,
-      child: TextField(
-        decoration: InputDecoration(
-          contentPadding: EdgeInsets.symmetric(vertical: 8.0, horizontal: 5.0),
-          isDense: true,
-          hintText: defaultValue,
-          border: OutlineInputBorder(),
-        ),
-        keyboardType: TextInputType.number,
-      ),
-    );
-  }
-
-  Widget _buildResetButton() {
+  Widget _buildAddMedicationButton() {
     return Center(
-      child: TextButton.icon(
-        onPressed: () {},
-        icon: Icon(Icons.delete, color: Colors.red),
-        label: Text(
-          "Reset band",
-          style: TextStyle(color: Colors.red),
-        ),
-      ),
-    );
-  }
-
-  Widget _buildSaveButton() {
-    return Center(
-      child: ElevatedButton(
-        onPressed: () {
-          // Acción para guardar la configuración
-        },
-        child: Text("Save"),
-        style: ElevatedButton.styleFrom(
-          minimumSize: Size(150, 50),
-        ),
+      child: ElevatedButton.icon(
+        onPressed: _addMedicationSchedule,
+        icon: Icon(Icons.add),
+        label: Text("Add Medication"),
       ),
     );
   }
 }
-
-
-

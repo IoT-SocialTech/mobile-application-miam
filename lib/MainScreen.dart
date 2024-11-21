@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:miam_flutter/Device/presentation/screens/band_list_screen.dart';
-import 'package:miam_flutter/Notification/presentation/screens/alert_history_screen.dart';
+import 'package:miam_flutter/Notification/presentation/screens/medication_schedule_screenState.dart';
 import 'package:miam_flutter/metrics/presentation/screens/monitoring_screen.dart';
 import 'package:miam_flutter/Device/presentation/screens/band_configuration_screen.dart';
 
@@ -14,7 +14,7 @@ class _MainScreenState extends State<MainScreen> {
 
   final List<Widget> _screens = [
     MonitoringScreen(),
-    AlertHistoryScreen(),
+    MedicationScheduleScreen(),
     BandListScreen(),
   ];
 
@@ -39,16 +39,16 @@ class _MainScreenState extends State<MainScreen> {
             label: 'Dashboard',
           ),
           BottomNavigationBarItem(
-            icon: Icon(Icons.shield),
-            label: 'Security',
+            icon: Icon(Icons.medication),
+            label: 'Medications',
           ),
           BottomNavigationBarItem(
-            icon: Icon(Icons.notifications),
-            label: 'Notifications',
+            icon: Icon(Icons.list_alt),
+            label: 'Pacientes',
           ),
           BottomNavigationBarItem(
-            icon: Icon(Icons.menu), // Menu Hamburguesa
-            label: 'Menu',
+            icon: Icon(Icons.person_2_sharp), // Menu Hamburguesa
+            label: 'Profile',
           ),
         ],
         currentIndex: _selectedIndex,

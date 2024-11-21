@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:miam_flutter/Device/presentation/screens/band_list_screen.dart';
 import 'package:miam_flutter/Notification/presentation/screens/medication_schedule_screenState.dart';
 import 'package:miam_flutter/metrics/presentation/screens/monitoring_screen.dart';
-import 'package:miam_flutter/Device/presentation/screens/band_configuration_screen.dart';
+import 'package:miam_flutter/account/presentation/screens/profile_screen.dart';
 
 class MainScreen extends StatefulWidget {
   @override
@@ -16,6 +16,7 @@ class _MainScreenState extends State<MainScreen> {
     MonitoringScreen(),
     MedicationScheduleScreen(),
     BandListScreen(),
+    ProfileScreen(),
   ];
 
   void _onItemTapped(int index) {

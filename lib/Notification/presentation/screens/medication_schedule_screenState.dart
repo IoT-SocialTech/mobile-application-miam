@@ -80,13 +80,13 @@ class _MedicationScheduleScreenState extends State<MedicationScheduleScreen> {
       appBar: AppBar(
         title: Text("Medication Schedule"),
       ),
-      body: isLoading
-          ? Center(child: CircularProgressIndicator())
-          : medications.isEmpty
-          ? Center(child: Text("No medications found."))
-          : Padding(
-        padding: const EdgeInsets.all(8.0),
-        child: ListView.builder(
+      body: RefreshIndicator(
+        onRefresh: _fetchMedications,
+        child: isLoading
+            ? Center(child: CircularProgressIndicator())
+            : medications.isEmpty
+            ? Center(child: Text("No medications found."))
+            : ListView.builder(
           itemCount: medications.length,
           itemBuilder: (context, index) {
             final medication = medications[index];

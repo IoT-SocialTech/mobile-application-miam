@@ -162,7 +162,9 @@ class _BandListScreenState extends State<BandListScreen> {
                   ScaffoldMessenger.of(context).showSnackBar(
                     SnackBar(content: Text("Patient Created Successfully!")),
                   );
-                  Navigator.of(context).pop();
+                  // Actualizar la lista de pacientes
+                  Navigator.of(context).pop(); // Cerrar el formulario
+                  await _fetchPatients(); // Volver a obtener la lista de pacientes
                 } catch (e) {
                   ScaffoldMessenger.of(context).showSnackBar(
                     SnackBar(content: Text("Error: ${e.toString()}")),

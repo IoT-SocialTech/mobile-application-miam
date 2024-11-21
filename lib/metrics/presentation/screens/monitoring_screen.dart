@@ -13,17 +13,17 @@ class MonitoringScreen extends StatefulWidget {
 
 class _MonitoringScreenState extends State<MonitoringScreen> {
   String? selectedCaregiverName;
-  List<String> patients = [];
+  int? patientsLength;
   String? selectedPatient;
   List<double> temperatureData = [];
   List<double> heartRateData = [];
   Timer? _timer;
+  Map<String, int> patientsMap = {};
 
   @override
   void initState() {
     super.initState();
-    _fetchCaregiverAndPatients();
-    _startVitalSignsUpdate();
+    _fetchCaregiverAndPatients(); // Obtiene pacientes y selecciona uno por defecto
   }
 
   @override
@@ -44,12 +44,15 @@ class _MonitoringScreenState extends State<MonitoringScreen> {
 
       // Obtener pacientes asociados
       final patientsList = await patientRepository.getPatientsByCaregiverId(caregiver.id);
-
+      //print("Patients: $patientsList");
+      //print("Patients cantidad: ${patientsList.length}");
       setState(() {
         selectedCaregiverName = caregiverName;
-        patients = patientsList.map((patient) => patient.name).toList();
-        if (patients.isNotEmpty) {
-          selectedPatient = patients.first;
+        patientsLength = patientsList.length;
+        patientsMap = {for (var patient in patientsList) patient.name: patient.id};
+        if (patientsMap.isNotEmpty) {
+          selectedPatient = patientsMap.keys.first; // Selecciona el primer paciente por defecto
+          _startVitalSignsUpdate(patientsMap[selectedPatient]!); // Inicia la actualización
         }
       });
     } catch (e) {
@@ -59,18 +62,22 @@ class _MonitoringScreenState extends State<MonitoringScreen> {
     }
   }
 
-  void _startVitalSignsUpdate() {
+  void _startVitalSignsUpdate(int patientId) {
+    _timer?.cancel(); // Cancela el timer anterior si existe
     final repository = FeingClientRepository();
+
     _timer = Timer.periodic(Duration(seconds: 5), (timer) async {
       try {
-        final temperatureResponse = await repository.getTemperature(1); // ID de paciente (ejemplo)
-        final heartRateResponse = await repository.getHeartRate(1);
+        final temperatureResponse = await repository.getTemperature(patientId);
+        final heartRateResponse = await repository.getHeartRate(patientId);
 
         setState(() {
           temperatureData.add(temperatureResponse.temperature);
           heartRateData.add(heartRateResponse.heartRate.toDouble());
-          if (temperatureData.length > 10) temperatureData.removeAt(0); // Máximo 10 puntos
-          if (heartRateData.length > 10) heartRateData.removeAt(0); // Máximo 10 puntos
+
+          // Limitar a un máximo de 10 puntos en cada gráfica
+          if (temperatureData.length > 10) temperatureData.removeAt(0);
+          if (heartRateData.length > 10) heartRateData.removeAt(0);
         });
       } catch (e) {
         print("Error fetching vital signs: $e");
@@ -96,7 +103,7 @@ class _MonitoringScreenState extends State<MonitoringScreen> {
             ),
             Center(
               child: Text(
-                "${patients.length}",
+                "${patientsLength}",
                 style: TextStyle(
                   fontSize: 50,
                   fontWeight: FontWeight.bold,
@@ -108,7 +115,7 @@ class _MonitoringScreenState extends State<MonitoringScreen> {
             Padding(
               padding: const EdgeInsets.all(16.0),
               child: Text(
-                "Caregiver: $selectedCaregiverName",
+                "Caregiver: $selectedCaregiverName !",
                 style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
               ),
             ),
@@ -121,9 +128,15 @@ class _MonitoringScreenState extends State<MonitoringScreen> {
                 onChanged: (String? newValue) {
                   setState(() {
                     selectedPatient = newValue;
+
+                    // Buscar el ID del paciente seleccionado y reiniciar actualizaciones
+                    int? selectedPatientId = patientsMap[newValue];
+                    if (selectedPatientId != null) {
+                      _startVitalSignsUpdate(selectedPatientId);
+                    }
                   });
                 },
-                items: patients
+                items: patientsMap.keys
                     .map<DropdownMenuItem<String>>((String value) {
                   return DropdownMenuItem<String>(
                     value: value,

@@ -2,19 +2,12 @@
 
 A new Flutter project.
 
-## Getting Started
+aplicación móvil como parte de un proyecto académico relacionado con IoT, cuyo objetivo principal era facilitar el cuidado de adultos mayores. La aplicación permite:
+- Registrar cuidadores asignados a pacientes mayores.
+- Monitorear en tiempo real signos vitales y temperatura de los pacientes.
+- Visualizar un historial detallado de los datos recopilados, facilitando el seguimiento y la toma de decisiones.
 
-This project is a starting point for a Flutter application.
-
-A few resources to get you started if this is your first Flutter project:
-
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
-
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
-
-# miam_flutter
-```
-change name coman: flutter pub run change_app_package_name:main com.socialtech.miam_flutter
+pantalla de inicio
+![alt text](image.png)
+pantalla de registro
+![alt text](image-1.png)

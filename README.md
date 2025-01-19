@@ -9,5 +9,7 @@ aplicación móvil como parte de un proyecto académico relacionado con IoT, cuy
 
 pantalla de inicio
 ![alt text](image.png)
+
+
 pantalla de registro
 ![alt text](image-1.png)
